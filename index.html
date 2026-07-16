@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>red — whoami</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#0B1220;
+    --surface:#111C30;
+    --surface-2:#16233B;
+    --line:#233150;
+    --text:#E7ECF3;
+    --muted:#8592A8;
+    --accent:#5FCE9A;
+    --accent-dim:#3A8F6C;
+    --amber:#E8B85C;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(95,206,154,0.06), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(232,184,92,0.05), transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .window{
+    width:100%;
+    max-width:420px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02);
+  }
+
+  .titlebar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 14px;
+    background:var(--surface-2);
+    border-bottom:1px solid var(--line);
+  }
+  .dot{width:10px;height:10px;border-radius:50%;}
+  .dot.r{background:#E8615C;}
+  .dot.y{background:#E8B85C;}
+  .dot.g{background:#5FCE9A;}
+  .titlebar span{
+    margin-left:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  .body{
+    padding:32px 28px 28px;
+  }
+
+  .prompt{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--accent);
+    margin:0 0 4px;
+  }
+  .prompt .path{color:var(--muted);}
+
+  h1{
+    font-family:'JetBrains Mono', monospace;
+    font-size:22px;
+    font-weight:700;
+    margin:2px 0 6px;
+    letter-spacing:-0.01em;
+  }
+
+  .role{
+    font-size:14px;
+    color:var(--muted);
+    margin:0 0 26px;
+    line-height:1.5;
+  }
+  .role strong{color:var(--text); font-weight:600;}
+
+  .status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+    margin-bottom:22px;
+  }
+  .pulse{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 0 rgba(95,206,154,0.6);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(95,206,154,0.45);}
+    70%{box-shadow:0 0 0 8px rgba(95,206,154,0);}
+    100%{box-shadow:0 0 0 0 rgba(95,206,154,0);}
+  }
+
+  .stack{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin:8px 0 24px;
+  }
+  .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+    background:rgba(95,206,154,0.08);
+    border:1px solid var(--accent-dim);
+    border-radius:5px;
+    padding:4px 10px;
+  }
+
+  .links{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .link{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:13px 16px;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:7px;
+    text-decoration:none;
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    transition:border-color .15s ease, transform .15s ease, background .15s ease;
+  }
+  .link:hover{
+    border-color:var(--accent-dim);
+    background:#182746;
+    transform:translateX(2px);
+  }
+  .link .cmd{color:var(--muted);}
+  .link .cmd::before{content:"$ ";color:var(--accent);}
+  .link .arrow{color:var(--muted); transition:color .15s ease;}
+  .link:hover .arrow{color:var(--accent);}
+
+  .link.primary{
+    border-color:var(--accent-dim);
+    background:linear-gradient(180deg, rgba(95,206,154,0.08), rgba(95,206,154,0.03));
+  }
+  .link.primary .cmd::before{color:var(--amber);}
+
+  footer{
+    margin-top:26px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    display:flex;
+    justify-content:space-between;
+  }
+
+  .cursor{
+    display:inline-block;
+    width:8px;height:15px;
+    background:var(--accent);
+    margin-left:4px;
+    animation:blink 1s steps(1) infinite;
+    vertical-align:text-bottom;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  @media (prefers-reduced-motion: reduce){
+    .pulse, .cursor{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="window">
+    <div class="titlebar">
+      <div class="dot r"></div>
+      <div class="dot y"></div>
+      <div class="dot g"></div>
+      <span>red@bio — 80×24</span>
+    </div>
+
+    <div class="body">
+      <p class="prompt"><span class="path">~</span> whoami</p>
+      <h1>Gianluca Zappolini<span class="cursor"></span></h1>
+      <p class="role"><strong>Full Stack Developer</strong> — Sysadmin, ex tecnico Industry 4.0/5.0, videogames lover, proud otaku and TV series binger</p>
+
+      <div class="status">
+        <span class="pulse"></span> status: online, based in Tuscany
+      </div>
+
+      <p class="prompt" style="margin-top:0;"><span class="path">~</span> cat stack.txt</p>
+      <div class="stack">
+        <span class="tag">Python</span>
+        <span class="tag">C#</span>
+        <span class="tag">Blazor</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">MySQL</span>
+        <span class="tag">Git</span>
+        <span class="tag">Oracle</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">React</span>
+        <span class="tag">Angular</span>
+        <span class="tag">AI</span>
+        <span class="tag">SQL</span>
+        <span class="tag">Apple Beta Tester</span>
+      </div>
+
+      <div class="links">
+        <a class="link primary" href="https://github.com/tuo-utente" target="_blank" rel="noopener">
+          <span class="cmd">open github</span>
+          <span class="arrow">→</span>
+        </a>
+      </div>
+
+      <footer>
+        <span>uptime: 5y exp</span>
+        <span>v1.0</span>
+      </footer>
+    </div>
+  </div>
+
+</body>
+</html>
